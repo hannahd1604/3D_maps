@@ -7,7 +7,7 @@
   },
 {
   "id": "annotations-refined",
-  "name": "scATAC FBbt refined x Leiden",
+  "name": "scATAC FBbt refined x Leiden 3D UMAP",
   "desc": "Refined annotation view.",
   "file": "scATAC_embryo_FBbt_annot_13022026_refined_x_Leiden4.5_3D.html"
 }
