@@ -1,13 +1,13 @@
 [
   {
     "id": "ael-bin-3d",
-    "name": "scATAC AEL bin 3D UMAP",
+    "name": "scATAC AEL 3D UMAP",
     "desc": "Topics700 UMAP 3D colored by AEL bin.",
     "file": "scATAC_embryo_AEL_bin_3D_UMAP3D_viridis_basegrey.html"
   },
 {
   "id": "annotations-refined",
-  "name": "FBbt refined x Leiden",
+  "name": "scATAC FBbt refined x Leiden",
   "desc": "Refined annotation view.",
   "file": "scATAC_embryo_FBbt_annot_13022026_refined_x_Leiden4.5_3D.html"
 }
