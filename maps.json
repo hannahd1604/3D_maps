@@ -22,5 +22,11 @@
   "name": "scRNA FBbt refined per age 3D UMAP",
   "desc": "Refined scRNA annotation view.",
   "file": "scRNA_embryo_FBbt_annotation_per_age_06022026_3D.html"
+},
+  {
+  "id": "RNA annotations-refined",
+  "name": "scRNA FBbt refined merged UMAP",
+  "desc": "Refined scRNA annotation view merged.",
+  "file": "scRNA_embryo_FBbt_annotation_06022026_3D.html"
 }
 ]
