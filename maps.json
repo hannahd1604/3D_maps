@@ -1,7 +1,7 @@
 [
   {
     "id": "ael-bin-3d",
-    "name": "AEL bin 3D UMAP (viridis + base grey)",
+    "name": "scATAC AEL bin 3D UMAP",
     "desc": "Topics700 UMAP 3D colored by AEL bin.",
     "file": "scATAC_embryo_AEL_bin_3D_UMAP3D_viridis_basegrey.html"
   }
