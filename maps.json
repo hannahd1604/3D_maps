@@ -10,6 +10,11 @@
   "name": "scATAC FBbt refined x Leiden 3D UMAP",
   "desc": "Refined annotation view.",
   "file": "scATAC_embryo_FBbt_annot_13022026_refined_x_Leiden4.5_3D.html"
-}
-
+},
+  {
+    "id": "ael-bin-3d",
+    "name": "scRNA AEL 3D UMAP",
+    "desc": "X_PCA UMAP 3D colored by AEL bin.",
+    "file": "scRNA_embryo_AEL_bin_3D_UMAP3D_viridis_basegrey.html"
+  }
 ]
