@@ -1,0 +1,127 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>3D maps</title>
+  <style>
+    :root {
+      --sidebar-w: 320px;
+      --bg: #0b0f19;
+      --panel: #111827;
+      --text: #e5e7eb;
+      --muted: #9ca3af;
+      --border: rgba(255,255,255,0.12);
+      --accent: #60a5fa;
+    }
+    body { margin: 0; font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif; background: var(--bg); color: var(--text); }
+    .app { display: grid; grid-template-columns: var(--sidebar-w) 1fr; height: 100vh; }
+    .sidebar { background: var(--panel); border-right: 1px solid var(--border); padding: 14px 12px; overflow: auto; }
+    .title { font-weight: 700; font-size: 16px; margin: 2px 6px 10px; }
+    .hint { color: var(--muted); font-size: 12px; margin: 0 6px 12px; line-height: 1.35; }
+    .search { width: calc(100% - 12px); margin: 0 6px 10px; padding: 10px 10px; border-radius: 10px; border: 1px solid var(--border); background: rgba(255,255,255,0.04); color: var(--text); }
+    .list { display: flex; flex-direction: column; gap: 8px; padding: 0 6px 10px; }
+    .item { cursor: pointer; padding: 10px 10px; border-radius: 12px; border: 1px solid var(--border); background: rgba(255,255,255,0.03); }
+    .item:hover { border-color: rgba(96,165,250,0.6); }
+    .item.active { border-color: var(--accent); box-shadow: 0 0 0 2px rgba(96,165,250,0.25) inset; }
+    .item .name { font-weight: 600; font-size: 13px; margin-bottom: 2px; }
+    .item .desc { color: var(--muted); font-size: 12px; }
+    .main { position: relative; }
+    .topbar { height: 44px; display: flex; align-items: center; gap: 10px; padding: 0 12px; border-bottom: 1px solid var(--border); background: rgba(17,24,39,0.7); backdrop-filter: blur(8px); }
+    .badge { font-size: 12px; color: var(--muted); }
+    .link { color: var(--accent); text-decoration: none; font-size: 12px; }
+    iframe { width: 100%; height: calc(100vh - 45px); border: 0; background: white; }
+    .loading { position: absolute; inset: 45px 0 0 0; display: none; align-items: center; justify-content: center; color: var(--muted); font-size: 13px; pointer-events: none; }
+    .loading.show { display: flex; }
+  </style>
+</head>
+<body>
+<div class="app">
+  <aside class="sidebar">
+    <div class="title">3D maps</div>
+    <div class="hint">Click a map to load it. Add new maps by uploading the HTML file and updating <code>maps.json</code>.</div>
+    <input id="search" class="search" placeholder="Filter maps…" />
+    <div id="list" class="list"></div>
+  </aside>
+
+  <main class="main">
+    <div class="topbar">
+      <div id="current" class="badge">No map loaded</div>
+      <a id="openNewTab" class="link" href="#" target="_blank" rel="noopener">Open in new tab</a>
+    </div>
+    <div id="loading" class="loading">Loading…</div>
+    <iframe id="viewer" src="" loading="eager"></iframe>
+  </main>
+</div>
+
+<script>
+  const listEl = document.getElementById("list");
+  const searchEl = document.getElementById("search");
+  const viewer = document.getElementById("viewer");
+  const current = document.getElementById("current");
+  const openNewTab = document.getElementById("openNewTab");
+  const loading = document.getElementById("loading");
+
+  let maps = [];
+  let activeId = null;
+
+  function renderList(filter = "") {
+    listEl.innerHTML = "";
+    const f = filter.trim().toLowerCase();
+    for (const m of maps) {
+      const hay = (m.name + " " + (m.desc || "")).toLowerCase();
+      if (f && !hay.includes(f)) continue;
+
+      const item = document.createElement("div");
+      item.className = "item" + (m.id === activeId ? " active" : "");
+      item.onclick = () => loadMap(m.id);
+
+      const name = document.createElement("div");
+      name.className = "name";
+      name.textContent = m.name;
+
+      const desc = document.createElement("div");
+      desc.className = "desc";
+      desc.textContent = m.desc || m.file;
+
+      item.appendChild(name);
+      item.appendChild(desc);
+      listEl.appendChild(item);
+    }
+  }
+
+  function loadMap(id) {
+    const m = maps.find(x => x.id === id);
+    if (!m) return;
+    activeId = id;
+
+    loading.classList.add("show");
+    viewer.src = m.file;
+    current.textContent = m.name;
+    openNewTab.href = m.file;
+
+    // re-render to update active styling
+    renderList(searchEl.value);
+  }
+
+  // hide loading when iframe finishes
+  viewer.addEventListener("load", () => loading.classList.remove("show"));
+
+  async function init() {
+    const res = await fetch("maps.json", { cache: "no-store" });
+    maps = await res.json();
+
+    // default: load first map
+    if (maps.length) loadMap(maps[0].id);
+    renderList();
+  }
+
+  searchEl.addEventListener("input", (e) => renderList(e.target.value));
+
+  init().catch(err => {
+    current.textContent = "Error loading maps.json";
+    console.error(err);
+  });
+</script>
+</body>
+</html>
