@@ -1,30 +1,30 @@
 [
   {
-    "id": "ATAC ael-bin-3d",
+    "id": "ATAC embryo ael-bin-3d",
     "name": "scATAC embryo AEL 3D UMAP",
     "desc": "Topics700 UMAP 3D colored by AEL bin.",
     "file": "scATAC_embryo_AEL_bin_3D_UMAP3D_viridis_basegrey.html"
   },
 {
-  "id": "ATAC annotations-refined",
+  "id": "ATAC embryo annotations-refined",
   "name": "scATAC embryo FBbt refined x Leiden 3D UMAP",
   "desc": "Refined scATAC annotation view.",
   "file": "scATAC_embryo_FBbt_annot_13022026_refined_x_Leiden4.5_3D.html"
 },
   {
-    "id": "RNA ael-bin-3d",
+    "id": "RNA embryo ael-bin-3d",
     "name": "scRNA embryo AEL 3D UMAP",
     "desc": "X_PCA UMAP 3D colored by AEL bin.",
     "file": "scRNA_AEL_bin_3D_UMAP3D_viridis.html"
   },
   {
-  "id": "RNA annotations-refined",
+  "id": "RNA embryo annotations-refined per age",
   "name": "scRNA embryo FBbt refined per age 3D UMAP",
   "desc": "Refined scRNA annotation view.",
   "file": "scRNA_embryo_FBbt_annotation_per_age_06022026_3D.html"
 },
   {
-  "id": "RNA annotations-refined",
+  "id": "RNA embryo annotations-refined",
   "name": "scRNA embryo FBbt refined merged UMAP",
   "desc": "Refined scRNA annotation view merged.",
   "file": "scRNA_embryo_FBbt_annotation_06022026_3D.html"
@@ -36,7 +36,7 @@
   "file": "stage_3D.html"
 },
   {
-  "id": "ATAC ael-bin-3d",
+  "id": "ATAC dev FCA ael-bin-3d",
   "name": "scATAC devFCA AEL 3D UMAP",
   "desc": "ATAC 2k topics UMAP 3D colored by AEL bin.",
   "file": "scATAC_devFCA_AEL_bin_3D_UMAP3D_viridis_basegrey-2.html"
