@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>3D maps</title>
+  <title>3D UMAP Portal - 500k Optimized</title>
   <style>
     :root {
       --sidebar-w: 320px;
@@ -13,85 +13,195 @@
       --muted: #9ca3af;
       --border: rgba(255,255,255,0.12);
       --accent: #60a5fa;
+      --danger: #f87171;
     }
-    body { margin: 0; font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif; background: var(--bg); color: var(--text); }
-    .app { display: grid; grid-template-columns: var(--sidebar-w) 1fr; height: 100vh; }
-    .sidebar { background: var(--panel); border-right: 1px solid var(--border); padding: 14px 12px; overflow: auto; }
+    
+    body { 
+      margin: 0; 
+      font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif; 
+      background: var(--bg); 
+      color: var(--text); 
+      overflow: hidden;
+    }
+
+    .app { 
+      display: grid; 
+      grid-template-columns: var(--sidebar-w) 1fr; 
+      height: 100vh; 
+    }
+
+    /* Sidebar */
+    .sidebar { 
+      background: var(--panel); 
+      border-right: 1px solid var(--border); 
+      padding: 14px 12px; 
+      overflow-y: auto; 
+      display: flex;
+      flex-direction: column;
+    }
     .title { font-weight: 700; font-size: 16px; margin: 2px 6px 10px; }
     .hint { color: var(--muted); font-size: 12px; margin: 0 6px 12px; line-height: 1.35; }
-    .search { width: calc(100% - 12px); margin: 0 6px 10px; padding: 10px 10px; border-radius: 10px; border: 1px solid var(--border); background: rgba(255,255,255,0.04); color: var(--text); }
-    .list { display: flex; flex-direction: column; gap: 8px; padding: 0 6px 10px; }
-    .item { cursor: pointer; padding: 10px 10px; border-radius: 12px; border: 1px solid var(--border); background: rgba(255,255,255,0.03); }
-    .item:hover { border-color: rgba(96,165,250,0.6); }
-    .item.active { border-color: var(--accent); box-shadow: 0 0 0 2px rgba(96,165,250,0.25) inset; }
+    .search { 
+      width: calc(100% - 12px); 
+      margin: 0 6px 15px; 
+      padding: 10px; 
+      border-radius: 10px; 
+      border: 1px solid var(--border); 
+      background: rgba(255,255,255,0.04); 
+      color: var(--text); 
+      outline: none;
+    }
+    .search:focus { border-color: var(--accent); }
+
+    /* List Items */
+    .list { flex-grow: 1; display: flex; flex-direction: column; gap: 8px; padding: 0 6px 10px; }
+    .item { 
+      cursor: pointer; 
+      padding: 10px; 
+      border-radius: 12px; 
+      border: 1px solid var(--border); 
+      background: rgba(255,255,255,0.03); 
+      transition: all 0.2s ease;
+    }
+    .item:hover { border-color: rgba(96,165,250,0.6); background: rgba(255,255,255,0.06); }
+    .item.active { border-color: var(--accent); background: rgba(96,165,250,0.08); }
     .item .name { font-weight: 600; font-size: 13px; margin-bottom: 2px; }
-    .item .desc { color: var(--muted); font-size: 12px; }
-    .main { position: relative; background: #000; } /* Dark background for the map area */
-    .topbar { height: 44px; display: flex; align-items: center; gap: 10px; padding: 0 12px; border-bottom: 1px solid var(--border); background: rgba(17,24,39,0.7); backdrop-filter: blur(8px); z-index: 10; }
+    .item .desc { color: var(--muted); font-size: 11px; }
+
+    /* Memory Button at bottom of sidebar */
+    .mem-section { border-top: 1px solid var(--border); padding: 15px 6px 5px; margin-top: 10px; }
+    .btn-clear {
+      width: 100%;
+      padding: 8px;
+      background: rgba(248, 113, 113, 0.1);
+      border: 1px solid rgba(248, 113, 113, 0.2);
+      color: var(--danger);
+      border-radius: 8px;
+      cursor: pointer;
+      font-size: 12px;
+      font-weight: 600;
+      transition: 0.2s;
+    }
+    .btn-clear:hover { background: rgba(248, 113, 113, 0.2); border-color: var(--danger); }
+
+    /* Main Area */
+    .main { position: relative; display: flex; flex-direction: column; background: #000; }
+    .topbar { 
+      height: 44px; 
+      display: flex; 
+      align-items: center; 
+      justify-content: space-between;
+      padding: 0 15px; 
+      border-bottom: 1px solid var(--border); 
+      background: rgba(17,24,39,0.9); 
+      backdrop-filter: blur(10px);
+      z-index: 20;
+    }
     .badge { font-size: 12px; color: var(--muted); }
-    .link { color: var(--accent); text-decoration: none; font-size: 12px; display: none; } /* Hidden until map loaded */
-    iframe { width: 100%; height: calc(100vh - 45px); border: 0; background: #000; display: none; } /* Hidden until src set */
-    iframe.loaded { display: block; }
-    
-    /* Placeholder Screen */
+    .top-actions { display: flex; gap: 15px; align-items: center; }
+    .link { color: var(--accent); text-decoration: none; font-size: 12px; font-weight: 500; }
+
+    /* Iframe Styling */
+    #iframe-container { flex-grow: 1; position: relative; background: #000; }
+    .map-viewer { 
+      position: absolute; inset: 0;
+      width: 100%; height: 100%; 
+      border: 0; 
+      display: none; 
+    }
+    .map-viewer.active { display: block; }
+
+    /* Overlays */
     .placeholder { 
-        position: absolute; inset: 45px 0 0 0; 
-        display: flex; flex-direction: column; align-items: center; justify-content: center; 
-        color: var(--muted); text-align: center; padding: 20px;
+      position: absolute; inset: 0; 
+      display: flex; flex-direction: column; align-items: center; justify-content: center; 
+      color: var(--muted); text-align: center; z-index: 5;
     }
     .placeholder.hidden { display: none; }
     
-    .loading { position: absolute; inset: 45px 0 0 0; display: none; align-items: center; justify-content: center; color: var(--accent); font-size: 14px; background: rgba(11,15,25,0.8); z-index: 5; }
+    .loading { 
+      position: absolute; inset: 0; 
+      display: none; flex-direction: column; align-items: center; justify-content: center; 
+      background: rgba(11,15,25,1); 
+      color: var(--accent); font-size: 14px; z-index: 10; 
+    }
     .loading.show { display: flex; }
+    .spinner {
+      width: 24px; height: 24px;
+      border: 2px solid rgba(96,165,250,0.2);
+      border-top-color: var(--accent);
+      border-radius: 50%;
+      animation: spin 0.8s linear infinite;
+      margin-bottom: 10px;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
   </style>
 </head>
 <body>
+
 <div class="app">
   <aside class="sidebar">
-    <div class="title">3D maps</div>
-    <div class="hint">Click a map to load it.</div>
-    <input id="search" class="search" placeholder="Filter maps…" />
+    <div class="title">3D Single-Cell Portal</div>
+    <div class="hint">Optimized for 500k cell WebGL maps.</div>
+    <input id="search" class="search" placeholder="Search annotations..." autocomplete="off" />
+    
     <div id="list" class="list"></div>
+
+    <div class="mem-section">
+      <button class="btn-clear" onclick="clearMemory()">Clear Loaded Maps (Free RAM)</button>
+    </div>
   </aside>
 
   <main class="main">
     <div class="topbar">
-      <div id="current" class="badge">Waiting for selection...</div>
-      <a id="openNewTab" class="link" href="#" target="_blank" rel="noopener">Open in new tab</a>
+      <div id="current" class="badge">No map active</div>
+      <div class="top-actions">
+          <div id="mem-status" class="badge" style="font-style: italic;">Cache: 0 maps</div>
+          <a id="openNewTab" class="link" href="#" target="_blank" rel="noopener" style="display:none;">Open in New Tab</a>
+      </div>
     </div>
     
     <div id="placeholder" class="placeholder">
-        <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1" stroke-linecap="round" stroke-linejoin="round" style="margin-bottom:15px; opacity:0.3;">
-            <polygon points="12 2 2 7 12 12 22 7 12 2"></polygon>
-            <polyline points="2 17 12 22 22 17"></polyline>
-            <polyline points="2 12 12 17 22 12"></polyline>
-        </svg>
-        <div>Select a 3D UMAP from the sidebar to begin.</div>
+      <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round" style="margin-bottom:15px; opacity:0.2;">
+        <path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"></path>
+      </svg>
+      <div style="font-size: 14px; opacity: 0.5;">Select a library to load 3D UMAP</div>
     </div>
 
-    <div id="loading" class="loading">Loading high-resolution map...</div>
-    <iframe id="viewer" src="" loading="lazy"></iframe>
+    <div id="loading" class="loading">
+      <div class="spinner"></div>
+      <div>Loading 500k points...</div>
+    </div>
+    
+    <div id="iframe-container"></div>
   </main>
 </div>
 
 <script>
   const listEl = document.getElementById("list");
   const searchEl = document.getElementById("search");
-  const viewer = document.getElementById("viewer");
+  const container = document.getElementById("iframe-container");
   const current = document.getElementById("current");
   const openNewTab = document.getElementById("openNewTab");
   const loading = document.getElementById("loading");
   const placeholder = document.getElementById("placeholder");
+  const memStatus = document.getElementById("mem-status");
 
   let maps = [];
   let activeId = null;
+  let loadedIframes = {}; 
+
+  function updateMemStatus() {
+    const count = Object.keys(loadedIframes).length;
+    memStatus.textContent = `Cache: ${count} map${count === 1 ? '' : 's'}`;
+  }
 
   function renderList(filter = "") {
     listEl.innerHTML = "";
     const f = filter.trim().toLowerCase();
-    for (const m of maps) {
-      const hay = (m.name + " " + (m.desc || "")).toLowerCase();
-      if (f && !hay.includes(f)) continue;
+    
+    maps.forEach(m => {
+      if (f && !((m.name + " " + (m.desc || "")).toLowerCase().includes(f))) return;
 
       const item = document.createElement("div");
       item.className = "item" + (m.id === activeId ? " active" : "");
@@ -108,53 +218,76 @@
       item.appendChild(name);
       item.appendChild(desc);
       listEl.appendChild(item);
-    }
+    });
   }
 
   function loadMap(id) {
-    if (activeId === id) return; // Don't reload if already active
+    if (activeId === id) return;
     
     const m = maps.find(x => x.id === id);
     if (!m) return;
     activeId = id;
 
-    // UI Updates
     placeholder.classList.add("hidden");
-    loading.classList.add("show");
-    viewer.classList.remove("loaded");
     openNewTab.style.display = "block";
-    
-    // THE TRIGGER: Setting .src here only loads the file NOW
-    viewer.src = m.file; 
-    
-    current.textContent = m.name;
     openNewTab.href = m.file;
+    current.textContent = m.name;
 
+    // Hide all
+    Object.values(loadedIframes).forEach(ifrm => ifrm.classList.remove("active"));
+
+    if (loadedIframes[id]) {
+      loadedIframes[id].classList.add("active");
+    } else {
+      loading.classList.add("show");
+      
+      const newIframe = document.createElement("iframe");
+      newIframe.className = "map-viewer active";
+      newIframe.src = m.file;
+      
+      newIframe.onload = () => {
+        // Delay hiding spinner slightly so WebGL has a millisecond to initialize
+        setTimeout(() => loading.classList.remove("show"), 100);
+      };
+      
+      container.appendChild(newIframe);
+      loadedIframes[id] = newIframe;
+      updateMemStatus();
+    }
     renderList(searchEl.value);
   }
 
-  // Show the iframe and hide loader only when the big HTML file is ready
-  viewer.addEventListener("load", () => {
-    if (viewer.src !== "" && !viewer.src.includes(window.location.hostname + "/#")) {
-        loading.classList.remove("show");
-        viewer.classList.add("loaded");
-    }
-  });
+  function clearMemory() {
+    if (Object.keys(loadedIframes).length === 0) return;
+    
+    // Remove all iframes from DOM
+    Object.values(loadedIframes).forEach(ifrm => ifrm.remove());
+    
+    // Reset state
+    loadedIframes = {};
+    activeId = null;
+    
+    // UI Reset
+    placeholder.classList.remove("hidden");
+    openNewTab.style.display = "none";
+    current.textContent = "No map active";
+    updateMemStatus();
+    renderList(searchEl.value);
+  }
 
   async function init() {
-    const res = await fetch("maps.json", { cache: "no-store" });
-    maps = await res.json();
-    
-    // REMOVED: maps[0] auto-load. Now it waits for user interaction.
-    renderList();
+    try {
+      const res = await fetch("maps.json", { cache: "no-store" });
+      maps = await res.json();
+      renderList();
+    } catch (err) {
+      current.textContent = "Error loading maps.json";
+    }
   }
 
   searchEl.addEventListener("input", (e) => renderList(e.target.value));
-
-  init().catch(err => {
-    current.textContent = "Error loading maps.json";
-    console.error(err);
-  });
+  init();
 </script>
+
 </body>
 </html>
