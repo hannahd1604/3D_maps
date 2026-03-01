@@ -18,27 +18,45 @@
     "file": "scRNA_AEL_bin_3D_UMAP3D_viridis.html"
   },
   {
-  "id": "RNA embryo annotations-refined per age",
-  "name": "scRNA embryo FBbt refined per age 3D UMAP",
-  "desc": "Refined scRNA annotation view.",
-  "file": "scRNA_embryo_FBbt_annotation_per_age_06022026_3D.html"
-},
+    "id": "RNA embryo annotations-refined per age",
+    "name": "scRNA embryo FBbt refined per age 3D UMAP",
+    "desc": "Refined scRNA annotation view.",
+    "file": "scRNA_embryo_FBbt_annotation_per_age_06022026_3D.html"
+  },
   {
-  "id": "RNA embryo annotations-refined",
-  "name": "scRNA embryo FBbt refined merged UMAP",
-  "desc": "Refined scRNA annotation view merged.",
-  "file": "scRNA_embryo_FBbt_annotation_06022026_3D.html"
-},
+    "id": "RNA embryo annotations-refined",
+    "name": "scRNA embryo FBbt refined merged UMAP",
+    "desc": "Refined scRNA annotation view merged.",
+    "file": "scRNA_embryo_FBbt_annotation_06022026_3D.html"
+  },
   {
-  "id": "ATAC developmental state",
-  "name": "scATAC devFCA developmental state UMAP",
-  "desc": "ATAC developmental state.",
-  "file": "stage_3D.html"
-},
+    "id": "ATAC developmental state",
+    "name": "scATAC devFCA developmental state UMAP",
+    "desc": "ATAC developmental state.",
+    "file": "stage_3D.html"
+  },
   {
-  "id": "ATAC dev FCA ael-bin-3d",
-  "name": "scATAC devFCA AEL 3D UMAP",
-  "desc": "ATAC 2k topics UMAP 3D colored by AEL bin.",
-  "file": "scATAC_devFCA_AEL_bin_3D_UMAP3D_viridis_basegrey-2.html"
-}
+    "id": "ATAC dev FCA ael-bin-3d",
+    "name": "scATAC devFCA AEL 3D UMAP",
+    "desc": "ATAC 2k topics UMAP 3D colored by AEL bin.",
+    "file": "scATAC_devFCA_AEL_bin_3D_UMAP3D_viridis_basegrey-2.html"
+  },
+  {
+    "id": "scRNA embryo annotated",
+    "name": "scRNA embryo annotated 3D UMAP",
+    "desc": "3D UMAP showing embryo cells (0-20hAEL), colored by annotation.",
+    "file": "embryo_FBbt_annotation_06022026.html"
+  },
+  {
+    "id": "whole atlas combined annotation",
+    "name": "scRNA Atlas combined annotation 3D UMAP",
+    "desc": "3D UMAP of whole development (LCB + FCA + AFCA), colored by annotation.",
+    "file": "whole_atlas_combined_annotation.html"
+  },
+  {
+    "id": "whole atlas timepoint combined annotation",
+    "name": "scRNA Atlas timepoint 3D UMAP",
+    "desc": "3D UMAP of whole development (LCB + FCA + AFCA), colored by timepoint. Annotation selectable from scrolldown menu.",
+    "file": "whole_atlas_timepoint_combined_annotation.html"
+  }
 ]
